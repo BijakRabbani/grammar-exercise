@@ -30,7 +30,6 @@ def show_hint():
     st.write(f"Usage: {st.session_state['grammar_concept_row'][1]}")  
     st.write(f"Example: {st.session_state['grammar_concept_row'][2]}") 
     st.write(f"Word meaning: {st.session_state['word_row'][1]}")  
-    st.write(f"Usually used in: {st.session_state['word_row'][2]}") 
 
 
 def click_next():
