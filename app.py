@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit_shortcuts import button, add_keyboard_shortcuts 
 import pandas as pd
 from dotenv import load_dotenv
 from google import genai
@@ -24,12 +25,21 @@ def check_sentence(grammar_concept, word, sentence):
     return response.text
 
 @st.dialog(title="Hint")
-def show_hint(grammar_concept_row, word_row):
+def show_hint():
     # Display the hint for the grammar concept
-    st.write(f"Usage: {grammar_concept_row[1]}")  
-    st.write(f"Example: {grammar_concept_row[2]}") 
-    st.write(f"Word meaning: {word_row[1]}")  
-    st.write(f"Usually used in: {word_row[2]}") 
+    st.write(f"Usage: {st.session_state['grammar_concept_row'][1]}")  
+    st.write(f"Example: {st.session_state['grammar_concept_row'][2]}") 
+    st.write(f"Word meaning: {st.session_state['word_row'][1]}")  
+    st.write(f"Usually used in: {st.session_state['word_row'][2]}") 
+
+
+def click_next():
+    del st.session_state['grammar_concept_row'] 
+    del st.session_state['grammar_concept'] 
+    del st.session_state['word_row']
+    del st.session_state['word']
+    st.session_state.text_input = ''
+    # st.rerun()
 
 
 # Streamlit app 
@@ -45,8 +55,6 @@ grammar_concept = grammar_concept_row[0]  # Assuming the first column contains t
 vocabulary_df = pd.read_excel("vocabulary.xlsx")
 word = vocabulary_df.sample(1).iloc[0, 0] 
 
-print(st.session_state)
-
 # Add a next button to refresh variables only when clicked
 if 'grammar_concept' not in st.session_state:
     st.session_state['grammar_concept_row'] = grammar_df.sample(1).iloc[0]
@@ -57,34 +65,42 @@ if 'word' not in st.session_state:
     st.session_state['word'] = st.session_state['word_row'][0]
 
 
-# Use session state variables
-# grammar_concept_row = st.session_state['grammar_concept_row']
-# grammar_concept = st.session_state['grammar_concept']
-# word = st.session_state['word']
-
 with st.container():
-    col1, col2, col3 = st.columns([2, 1, 1])
-
+    st.write(f"Grammar Concept: {st.session_state['grammar_concept'] }")
+    st.write(f"Word: {st.session_state['word']}")
+    
+    col1, col2 = st.columns([1, 1])
     with col1:
-        st.write(f"Grammar Concept: {st.session_state['grammar_concept'] }")
-        st.write(f"Word: {st.session_state['word']}")
+        button("Hint", "ctrl+h", show_hint, hint=True, use_container_width=True)
 
-    with col3:
-        if st.button("Hint", use_container_width=True):
-            show_hint(st.session_state['grammar_concept_row'], st.session_state['word_row'])
+    with col2:
+        button("Next", "ctrl+n", click_next, hint=True, use_container_width=True)
 
-        if st.button("Next",  use_container_width=True):
-            del st.session_state['grammar_concept_row'] 
-            del st.session_state['grammar_concept'] 
-            del st.session_state['word_row']
-            del st.session_state['word']
-            st.session_state.text_input = ''
-            st.rerun()
 
 # User input
 sentence = st.text_input("Create a sentence using the word and grammar concept:", key='text_input')
+# def click_submit(sentence):
+#     if sentence:
+
+#         print(sentence)
+#         result = check_sentence(
+#             st.session_state['grammar_concept'], 
+#             st.session_state['word'], 
+#             sentence
+#             )
+
+#         is_correct = result.startswith("**Correct**") | result.startswith("Correct") 
+#         if is_correct:
+#             st.success(result)
+#         else:
+#             st.error(result)
+#     else:
+#         st.warning("Please enter a sentence.")
+# button("Submit", "ctrl+enter", click_submit, args=(sentence,), hint=True, use_container_width=True)
 if st.button("Submit", use_container_width=True):
     if sentence:
+
+        print(sentence)
         result = check_sentence(
             st.session_state['grammar_concept'], 
             st.session_state['word'], 
@@ -98,4 +114,3 @@ if st.button("Submit", use_container_width=True):
             st.error(result)
     else:
         st.warning("Please enter a sentence.")
-
