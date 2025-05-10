@@ -38,7 +38,19 @@ def click_next():
     del st.session_state['word_row']
     del st.session_state['word']
     st.session_state.text_input = ''
-    # st.rerun()
+
+
+def check_gemini_api():
+    if 'GEMINI_API_KEY' not in os.environ:
+        input_gemini_api()
+
+
+@st.dialog(title="Please input Gemini API")
+def input_gemini_api():
+    gemini_api = st.text_input("Gemini API Key", type="password")
+    if st.button("Submit", use_container_width=True, key='ssubmit_api'):
+        os.environ['GEMINI_API_KEY'] = gemini_api
+        st.rerun()
 
 
 # Streamlit app 
@@ -77,39 +89,45 @@ with st.container():
 
 
 # User input
-sentence = st.text_input("Create a sentence using the word and grammar concept:", key='text_input')
-# def click_submit(sentence):
-#     if sentence:
+with st.form(key='form_input'):
 
-#         print(sentence)
-#         result = check_sentence(
-#             st.session_state['grammar_concept'], 
-#             st.session_state['word'], 
-#             sentence
-#             )
+    sentence = st.text_input("Create a sentence using the word and grammar concept:", key='text_input')
+    # def click_submit(sentence):
+    #     if sentence:
 
-#         is_correct = result.startswith("**Correct**") | result.startswith("Correct") 
-#         if is_correct:
-#             st.success(result)
-#         else:
-#             st.error(result)
-#     else:
-#         st.warning("Please enter a sentence.")
-# button("Submit", "ctrl+enter", click_submit, args=(sentence,), hint=True, use_container_width=True)
-if st.button("Submit", use_container_width=True):
-    if sentence:
+    #         print(sentence)
+    #         result = check_sentence(
+    #             st.session_state['grammar_concept'], 
+    #             st.session_state['word'], 
+    #             sentence
+    #             )
 
-        print(sentence)
-        result = check_sentence(
-            st.session_state['grammar_concept'], 
-            st.session_state['word'], 
-            sentence
-            )
+    #         is_correct = result.startswith("**Correct**") | result.startswith("Correct") 
+    #         if is_correct:
+    #             st.success(result)
+    #         else:
+    #             st.error(result)
+    #     else:
+    #         st.warning("Please enter a sentence.")
+    # button("Submit", "ctrl+enter", click_submit, args=(sentence,), hint=True, use_container_width=True)
+    submitted = st.form_submit_button("Submit", use_container_width=True)
+    # if st.button("Submit", use_container_width=True):
+    if submitted:
+        if sentence:
 
-        is_correct = result.startswith("**Correct**") | result.startswith("Correct") 
-        if is_correct:
-            st.success(result)
+            print(sentence)
+            result = check_sentence(
+                st.session_state['grammar_concept'], 
+                st.session_state['word'], 
+                sentence
+                )
+
+            is_correct = result.startswith("**Correct**") | result.startswith("Correct") 
+            if is_correct:
+                st.success(result)
+            else:
+                st.error(result)
         else:
-            st.error(result)
-    else:
-        st.warning("Please enter a sentence.")
+            st.warning("Please enter a sentence.")
+
+check_gemini_api()
