@@ -75,6 +75,8 @@ if 'word' not in st.session_state:
     st.session_state['word_row'] = vocabulary_df.sample(1).iloc[0]
     st.session_state['word'] = st.session_state['word_row'][0]
 
+if 'button_key_counter' not in st.session_state:
+    st.session_state['button_key_counter'] =3
 
 with st.container():
     st.write(f"Grammar Concept: {st.session_state['grammar_concept'] }")
@@ -90,28 +92,8 @@ with st.container():
 
 # User input
 with st.form(key='form_input'):
-
     sentence = st.text_input("Create a sentence using the word and grammar concept:", key='text_input')
-    # def click_submit(sentence):
-    #     if sentence:
-
-    #         print(sentence)
-    #         result = check_sentence(
-    #             st.session_state['grammar_concept'], 
-    #             st.session_state['word'], 
-    #             sentence
-    #             )
-
-    #         is_correct = result.startswith("**Correct**") | result.startswith("Correct") 
-    #         if is_correct:
-    #             st.success(result)
-    #         else:
-    #             st.error(result)
-    #     else:
-    #         st.warning("Please enter a sentence.")
-    # button("Submit", "ctrl+enter", click_submit, args=(sentence,), hint=True, use_container_width=True)
     submitted = st.form_submit_button("Submit", use_container_width=True)
-    # if st.button("Submit", use_container_width=True):
     if submitted:
         if sentence:
 
