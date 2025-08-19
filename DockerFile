@@ -1,0 +1,22 @@
+# Use the official lightweight Python image
+FROM python:3.11-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install Git
+RUN apt-get update && apt-get install -y git \
+    && rm -rf /var/lib/apt/lists/*
+
+# # Copy dependencies file and install them
+# COPY requirements.txt .
+# RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the app files
+COPY . .
+
+# # Streamlit uses port 8501 by default
+# EXPOSE 8502
+
+# # Run Streamlit app
+# CMD ["streamlit", "run", "main.py", "--server.port=8502", "--server.address=0.0.0.1"]
