@@ -1,5 +1,5 @@
 import streamlit as st
-from streamlit_shortcuts import button, add_keyboard_shortcuts 
+from streamlit_shortcuts import shortcut_button 
 import pandas as pd
 from dotenv import load_dotenv
 from google import genai
@@ -84,10 +84,12 @@ with st.container():
     
     col1, col2 = st.columns([1, 1])
     with col1:
-        button("Hint", "ctrl+h", show_hint, hint=True, use_container_width=True)
+        if shortcut_button("Hint", "ctrl+h", hint=True, use_container_width=True):
+            show_hint()
 
     with col2:
-        button("Next", "ctrl+n", click_next, hint=True, use_container_width=True)
+        if shortcut_button("Next", "ctrl+n", hint=True, use_container_width=True):
+            click_next()
 
 
 # User input
