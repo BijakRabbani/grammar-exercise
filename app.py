@@ -30,9 +30,15 @@ def check_sentence(grammar_concept, word, sentence):
 @st.dialog(title="Hint")
 def show_hint():
     # Display the hint for the grammar concept
-    st.write(f"Usage: {st.session_state['grammar_concept_row'][1]}")  
-    st.write(f"Example: {st.session_state['grammar_concept_row'][2]}") 
-    st.write(f"Word meaning: {st.session_state['word_row'][1]}")  
+    with st.container(border=True):
+        st.write(f"### {st.session_state['grammar_concept_row'][0]}")
+        st.write(f"**Usage**: {st.session_state['grammar_concept_row'][1]}")  
+        st.write(f"**Example**: {st.session_state['grammar_concept_row'][2]}") 
+
+    # st.write('#### Word Meaning')
+    with st.container(border=True):
+        st.write(f"### {st.session_state['word_row'][0]}")
+        st.write(f"{st.session_state['word_row'][1]}")  
 
 
 def click_next():
@@ -82,8 +88,8 @@ if 'button_key_counter' not in st.session_state:
     st.session_state['button_key_counter'] = 3
 
 with st.container():
-    st.write(f"Grammar Concept: {st.session_state['grammar_concept'] }")
-    st.write(f"Word: {st.session_state['word']}")    
+    st.write(f"**Grammar**: {st.session_state['grammar_concept'] }")
+    st.write(f"**Word**: {st.session_state['word']}")    
             
 # User input
 with st.form(key='form_input'):
