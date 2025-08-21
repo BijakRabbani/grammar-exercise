@@ -5,11 +5,12 @@ import pandas as pd
 from dotenv import load_dotenv
 from google import genai
 import os
-import random
 
 load_dotenv()
 #%%
 def check_sentence(grammar_concept, word, sentence):
+    '''
+    '''
     client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 
     prompt = (
@@ -29,6 +30,8 @@ def check_sentence(grammar_concept, word, sentence):
 
 @st.dialog(title="Hint")
 def show_hint():
+    '''
+    '''
     # Display the hint for the grammar concept
     with st.container(border=True):
         st.write(f"### {st.session_state['grammar_concept_row'][0]}")
@@ -42,6 +45,8 @@ def show_hint():
 
 
 def click_next():
+    '''
+    '''
     del st.session_state['grammar_concept_row'] 
     del st.session_state['grammar_concept'] 
     del st.session_state['word_row']
@@ -50,75 +55,80 @@ def click_next():
 
 
 def check_gemini_api():
+    '''
+    Check if Gemini API is available as environment varibale
+    '''
     if 'GEMINI_API_KEY' not in os.environ:
         input_gemini_api()
 
 
 @st.dialog(title="Please input Gemini API")
 def input_gemini_api():
+    '''
+    
+    '''
     gemini_api = st.text_input("Gemini API Key", type="password")
     if st.button("Submit", use_container_width=True, key='ssubmit_api'):
         os.environ['GEMINI_API_KEY'] = gemini_api
         st.rerun()
 
+if __name__ == '__main__':
+    st.title("Writing Exercise")
+    check_gemini_api()
 
-# Streamlit app 
-st.title("Writing Exercise")
+    # Read the grammar.xlsx file and pick a random grammar concept
+    grammar_df = pd.read_excel("grammar.xlsx")
+    grammar_concept_row = grammar_df.sample(1).iloc[0]
+    grammar_concept = grammar_concept_row[0]  # Assuming the first column contains the grammar concepts
 
-# Grammar concept and word
-# Read the grammar.xlsx file and pick a random grammar concept
-grammar_df = pd.read_excel("grammar.xlsx")
-grammar_concept_row = grammar_df.sample(1).iloc[0]
-grammar_concept = grammar_concept_row[0]  # Assuming the first column contains the grammar concepts
+    # Read the vocabulary.xlsx file and pick a random word
+    vocabulary_df = pd.read_excel("vocabulary.xlsx")
+    word = vocabulary_df.sample(1).iloc[0, 0] 
 
-# Read the vocabulary.xlsx file and pick a random word
-vocabulary_df = pd.read_excel("vocabulary.xlsx")
-word = vocabulary_df.sample(1).iloc[0, 0] 
+    # Store the word and grammar to session state
+    if 'grammar_concept' not in st.session_state:
+        st.session_state['grammar_concept_row'] = grammar_df.sample(1).iloc[0]
+        st.session_state['grammar_concept'] = st.session_state['grammar_concept_row'][0]
 
-# Add a next button to refresh variables only when clicked
-if 'grammar_concept' not in st.session_state:
-    st.session_state['grammar_concept_row'] = grammar_df.sample(1).iloc[0]
-    st.session_state['grammar_concept'] = st.session_state['grammar_concept_row'][0]
+    if 'word' not in st.session_state:
+        st.session_state['word_row'] = vocabulary_df.sample(1).iloc[0]
+        st.session_state['word'] = st.session_state['word_row'][0]
 
-if 'word' not in st.session_state:
-    st.session_state['word_row'] = vocabulary_df.sample(1).iloc[0]
-    st.session_state['word'] = st.session_state['word_row'][0]
+    # Question
+    with st.container():
+        st.markdown(
+            f"""
+            Create a sentence using the word 
+            <span style='font-size:18px; font-style:italic; text-decoration:underline;'>{st.session_state['word']}</span>
+            using 
+            <span style='font-size:18px; font-style:italic; text-decoration:underline;'>{st.session_state['grammar_concept']}</span>
+            """,
+            unsafe_allow_html=True
+        )
 
-if 'button_key_counter' not in st.session_state:
-    st.session_state['button_key_counter'] = 3
-
-with st.container():
-    st.write(f"**Grammar**: {st.session_state['grammar_concept'] }")
-    st.write(f"**Word**: {st.session_state['word']}")    
-            
-# User input
-with st.form(key='form_input'):
-    sentence = st.text_input("Create a sentence using the word and grammar concept:", key='text_input_main')
-    submitted = st.form_submit_button("Submit", use_container_width=True)
-    if submitted:
-        if sentence:
-
-            print(sentence)
-            result = check_sentence(
-                st.session_state['grammar_concept'], 
-                st.session_state['word'], 
-                sentence
-                )
-
-            is_correct = result.startswith("**Correct**") | result.startswith("Correct") 
-            if is_correct:
-                st.success(result)
+    # User input
+    with st.form(key='form_input'):
+        sentence = st.text_input("Answer:", key='text_input_main')
+        submitted = st.form_submit_button("Submit", use_container_width=True)
+        if submitted:
+            if sentence:
+                result = check_sentence(
+                    st.session_state['grammar_concept'], 
+                    st.session_state['word'], 
+                    sentence
+                    )
+                is_correct = result.startswith("**Correct**") | result.startswith("Correct") 
+                if is_correct:
+                    st.success(result)
+                else:
+                    st.error(result)
             else:
-                st.error(result)
-        else:
-            st.warning("Please enter a sentence.")
+                st.warning("Please enter a sentence.")
 
-col1, col2 = st.columns([1, 1])
-with col1:
-    shortcut_button("Hint", "ctrl+h", hint=True, use_container_width=True, on_click=show_hint)
+    # Hint and next buttons
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        shortcut_button("Hint", "ctrl+h", hint=True, use_container_width=True, on_click=show_hint)
 
-with col2:
-    shortcut_button("Next", "ctrl+n", hint=True, use_container_width=True, on_click=click_next)
-
-check_gemini_api()
-
+    with col2:
+        shortcut_button("Next", "ctrl+n", hint=True, use_container_width=True, on_click=click_next)
