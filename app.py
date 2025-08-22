@@ -10,6 +10,7 @@ load_dotenv()
 #%%
 def check_sentence(grammar_concept, word, sentence):
     '''
+    Check the sentence using Gemini API for grammatical correctness
     '''
     client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 
@@ -31,6 +32,9 @@ def check_sentence(grammar_concept, word, sentence):
 @st.dialog(title="Hint")
 def show_hint():
     '''
+    Show the hint for the grammar concept and word
+    1. Display the grammar concept and its usage
+    2. Display the word and its meaning
     '''
     # Display the hint for the grammar concept
     with st.container(border=True):
@@ -46,6 +50,7 @@ def show_hint():
 
 def click_next():
     '''
+    Clear the session state and reset the text input
     '''
     del st.session_state['grammar_concept_row'] 
     del st.session_state['grammar_concept'] 
@@ -56,7 +61,7 @@ def click_next():
 
 def check_gemini_api():
     '''
-    Check if Gemini API is available as environment varibale
+    Check if Gemini API is available as environment variable
     '''
     if 'GEMINI_API_KEY' not in os.environ:
         input_gemini_api()
@@ -65,12 +70,13 @@ def check_gemini_api():
 @st.dialog(title="Please input Gemini API")
 def input_gemini_api():
     '''
-    
+    Input Gemini API key if not available in environment variables
     '''
     gemini_api = st.text_input("Gemini API Key", type="password")
     if st.button("Submit", use_container_width=True, key='ssubmit_api'):
         os.environ['GEMINI_API_KEY'] = gemini_api
         st.rerun()
+
 
 if __name__ == '__main__':
     st.title("Writing Exercise")
