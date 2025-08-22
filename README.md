@@ -34,6 +34,7 @@ The **Grammar Exercise App** is an interactive web application designed to help 
    - Write a sentence using both and submit your answer.
    - Receive instant feedback on correctness.
    - Use the "Hint" button for guidance or "Next" to try a new exercise.
+   - You can add more vocabulary words by updating the `vocabulary.xlsx` file.
 
 ## Screenshot
 ![App Screenshot](image.png)
