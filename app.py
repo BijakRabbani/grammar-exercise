@@ -79,7 +79,7 @@ def input_gemini_api():
 
 
 if __name__ == '__main__':
-    st.title("Writing Exercise")
+    st.title("Grammar Exercise")
     check_gemini_api()
 
     # Read the grammar.xlsx file and pick a random grammar concept

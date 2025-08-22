@@ -1,10 +1,10 @@
-# Writing Exercise App
+# Grammar Exercise App
 
 ## Overview
-The **Writing Exercise App** is an interactive web application designed to help users practice English grammar and vocabulary by generating writing exercises. Users are prompted to create sentences using randomly selected grammar concepts and vocabulary words, and their answers are checked for correctness using the Gemini API.
+The **Grammar Exercise App** is an interactive web application designed to help users practice English grammar and vocabulary. Users are prompted to create sentences using randomly selected grammar concepts and vocabulary words, and their answers are checked for correctness using the Gemini API.
 
 ## Objectives
-- Provide engaging writing exercises for English learners.
+- Provide engaging grammar exercises for English learners.
 - Help users improve their grammar and vocabulary.
 - Offer instant feedback on sentence correctness using AI.
 
@@ -37,7 +37,7 @@ The **Writing Exercise App** is an interactive web application designed to help 
 
 ---
 
-![Screenshot](image.png)
+![App Screenshot](image.png)
 
 ---
 
