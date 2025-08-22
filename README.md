@@ -35,12 +35,8 @@ The **Grammar Exercise App** is an interactive web application designed to help 
    - Receive instant feedback on correctness.
    - Use the "Hint" button for guidance or "Next" to try a new exercise.
 
----
-
+## Screenshot
 ![App Screenshot](image.png)
-
----
-
 
 ## Files
 - `app.py`: Main application code.
